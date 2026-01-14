@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>君康言语教学分析报告 | Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #F0F4F8; /* Light Blue-Grey Background */
+            color: #1E293B; /* Slate 800 */
+        }
+
+        /* Chart Container Styling - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Custom Card Styling */
+        .info-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease-in-out;
+        }
+        .info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Timeline Styling */
+        .timeline-line {
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #E2E8F0;
+            z-index: 0;
+        }
+    </style>
+    <!-- Chosen Palette: "Vibrant Focus"
+         Primary: #3B82F6 (Blue) - Professionalism & Trust
+         Secondary: #F59E0B (Amber) - Attention Areas
+         Accent: #10B981 (Emerald) - Success/Strengths
+         Background: #F0F4F8 (Cool Neutral)
+    -->
+
+    <!-- Application Structure Plan:
+         1. Header: Immediate context (Student Name, Date, Overall Status).
+         2. Executive Dashboard: High-level quantitative summary using charts (Radar & Bar) to show skill balance.
+         3. Deep Dive Analysis: Thematic cards breaking down specific behaviors (Social, Speech, Math) with "Good vs Bad" indicators.
+         4. SWOT Matrix: Strategic overview of strengths, challenges, and actions.
+         5. Family Action Plan: Vertical timeline for daily routines.
+         6. Visual Aid Workshop: Digital mockups of suggested physical tools.
+         Rationale: Flows from abstract data -> specific behaviors -> strategic analysis -> actionable daily steps -> concrete tools.
+    -->
+
+    <!-- Visualization & Content Choices:
+         - Radar Chart: To show the "shape" of Jun Kang's current skills across 5 dimensions. (Goal: Compare/Inform)
+         - Horizontal Bar Chart: To rank completion rates clearly from highest to lowest. (Goal: Compare)
+         - Structured Cards (HTML/Tailwind): For qualitative breakdowns (Speech errors, Math issues) as text is dense. (Goal: Inform)
+         - Vertical Timeline (HTML/Tailwind): To visualize the flow of the day for the family plan. (Goal: Process/Change)
+         - CSS Shapes: To visualize the "Visual Cards" without using images. (Goal: Inform/Guide)
+         - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-blue-600 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight">君康言语教学分析报告</h1>
+                    <p class="mt-2 text-blue-100 text-lg">日期: 2026年1月14日 | 督导老师: 资深言语治疗师</p>
+                </div>
+                <div class="mt-4 md:mt-0 bg-white/10 px-4 py-2 rounded-lg backdrop-blur-sm border border-white/20">
+                    <span class="block text-xs font-semibold uppercase tracking-wider text-blue-200">核心亮点</span>
+                    <span class="block text-xl font-bold">因果逻辑推理 (90%)</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <!-- Section 1: Data Overview (Charts) -->
+        <section>
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 border-l-4 border-blue-500 pl-4">能力维度数据概览</h2>
+                <p class="mt-2 text-gray-600 max-w-3xl">
+                    本部分通过量化数据展示君康在五个核心教学板块的表现。雷达图展示了技能发展的平衡性，而条形图则直观对比了各板块的目标达成率。可以明显看出，逻辑思维是其强项，而构音与代词转换是当前的主要短板。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Radar Chart Card -->
+                <div class="info-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <span class="text-2xl mr-2">🎯</span> 核心技能综合雷达
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-4 text-center">
+                        显示各领域发展的均衡程度。面积偏向右侧（逻辑/听记），左侧（社交/构音）需补强。
+                    </p>
+                </div>
+
+                <!-- Bar Chart Card -->
+                <div class="info-card p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                        <span class="text-2xl mr-2">📊</span> 目标达成率排名
+                    </h3>
+                    <div class="chart-container">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-4 text-center">
+                        直观展示各训练项目的完成百分比。因果关系表现最佳，构音训练完成度最低。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Detailed Performance Analysis -->
+        <section>
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 border-l-4 border-amber-500 pl-4">深度教学分析</h2>
+                <p class="mt-2 text-gray-600 max-w-3xl">
+                    以下是对社交、听觉、言语及数学四个领域的详细拆解。我们记录了君康在课堂上的具体表现，区分了掌握良好的技能（优势）和需要家庭重点干预的问题点（挑战）。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Interaction Card -->
+                <div class="info-card p-6 border-t-4 border-blue-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-gray-800">社交互动 (Interaction)</h3>
+                        <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-bold rounded-full">50% 完成</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <h4 class="font-bold text-green-700 text-sm">✅ 表现良好</h4>
+                            <p class="text-sm text-gray-700">能完成基础打招呼；能点数教室内人数。</p>
+                        </div>
+                        <div class="bg-red-50 p-3 rounded-lg">
+                            <h4 class="font-bold text-red-700 text-sm">⚠️ 核心问题</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-700 mt-1 space-y-1">
+                                <li><strong>代词转换：</strong> 问“谁在你前面”无法回答“我”，视角切换困难。</li>
+                                <li><strong>动词遗漏：</strong> 说“跳跳关门”而非“跳跳帮关门”。</li>
+                                <li><strong>思维固着：</strong> 认为爸爸只能去“公园”，难理解“公司”。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speech Card -->
+                <div class="info-card p-6 border-t-4 border-amber-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-gray-800">言语构音 (Speech)</h3>
+                        <span class="px-3 py-1 bg-amber-100 text-amber-800 text-sm font-bold rounded-full">40% 完成</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <h4 class="font-bold text-green-700 text-sm">✅ 表现良好</h4>
+                            <p class="text-sm text-gray-700">基础口部运动配合度高（展唇、圆唇、鼓腮）。</p>
+                        </div>
+                        <div class="bg-red-50 p-3 rounded-lg">
+                            <h4 class="font-bold text-red-700 text-sm">⚠️ 核心问题</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-700 mt-1 space-y-1">
+                                <li><strong>舌尖灵活性差：</strong> 扫唇动作（内外）完成欠佳。</li>
+                                <li><strong>/l/ 音发成 /n/：</strong> 如“沙拉”发成“沙纳”，需压舌板辅助。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Listening Card -->
+                <div class="info-card p-6 border-t-4 border-emerald-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-gray-800">听觉与推理 (Listening)</h3>
+                        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-sm font-bold rounded-full">80% 完成</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <h4 class="font-bold text-green-700 text-sm">✅ 表现良好</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-700 mt-1 space-y-1">
+                                <li><strong>短句听记：</strong> 三要素（谁/在哪/干什么）记忆良好。</li>
+                                <li><strong>特征推理：</strong> 能通过“黄色、椭圆、酸”猜出柠檬（结合图卡）。</li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <h4 class="font-bold text-blue-700 text-sm">ℹ️ 建议</h4>
+                            <p class="text-sm text-gray-700">目前较依赖视觉提示，后续尝试减少图卡，锻炼纯听觉推理。</p>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Math Card -->
+                 <div class="info-card p-6 border-t-4 border-purple-500">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-gray-800">数学概念 (Math)</h3>
+                        <span class="px-3 py-1 bg-purple-100 text-purple-800 text-sm font-bold rounded-full">60% 完成</span>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <h4 class="font-bold text-green-700 text-sm">✅ 表现良好</h4>
+                            <p class="text-sm text-gray-700">1-10 机械点数（唱数）基本过关。</p>
+                        </div>
+                        <div class="bg-red-50 p-3 rounded-lg">
+                            <h4 class="font-bold text-red-700 text-sm">⚠️ 核心问题</h4>
+                            <p class="text-sm text-gray-700"><strong>按数取物困难：</strong> 圈画时手口不一致，数量对应概念尚未稳固，需手指提示。</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Section 3: SWOT & Recommendations -->
+        <section class="bg-white rounded-2xl shadow-lg p-8">
+            <div class="mb-8 text-center">
+                <h2 class="text-2xl font-bold text-gray-900">综合优劣势分析 (SWOT)</h2>
+                <p class="text-gray-500 mt-2">基于课堂观察的个性化分析与策略</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Strengths -->
+                <div class="bg-green-50 rounded-xl p-6 border border-green-100">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-green-200 text-green-800 p-2 rounded-lg mr-3 text-xl">💪</div>
+                        <h3 class="text-lg font-bold text-gray-800">优势 (Strengths)</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start text-sm text-gray-700"><span class="mr-2 text-green-500">✓</span> 因果逻辑扎实（下雨-打伞）。</li>
+                        <li class="flex items-start text-sm text-gray-700"><span class="mr-2 text-green-500">✓</span> 视觉加工速度快，搜索能力好。</li>
+                        <li class="flex items-start text-sm text-gray-700"><span class="mr-2 text-green-500">✓</span> 配合度整体良好，能坚持练习。</li>
+                    </ul>
+                </div>
+
+                <!-- Weaknesses -->
+                <div class="bg-amber-50 rounded-xl p-6 border border-amber-100">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-amber-200 text-amber-800 p-2 rounded-lg mr-3 text-xl">🚧</div>
+                        <h3 class="text-lg font-bold text-gray-800">挑战 (Challenges)</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start text-sm text-gray-700"><span class="mr-2 text-amber-500">!</span> <strong>感官防御：</strong> 对噪音极度敏感，易分心。</li>
+                        <li class="flex items-start text-sm text-gray-700"><span class="mr-2 text-amber-500">!</span> 缺乏视角切换能力（你/我混淆）。</li>
+                        <li class="flex items-start text-sm text-gray-700"><span class="mr-2 text-amber-500">!</span> 舌尖位置不稳定，力度不足。</li>
+                    </ul>
+                </div>
+
+                <!-- Actions -->
+                <div class="bg-blue-50 rounded-xl p-6 border border-blue-100">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-200 text-blue-800 p-2 rounded-lg mr-3 text-xl">🚀</div>
+                        <h3 class="text-lg font-bold text-gray-800">建议 (Actions)</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start text-sm text-gray-700"><span class="mr-2 text-blue-500">➜</span> <strong>环境：</strong> 佩戴降噪耳机或在安静处训练。</li>
+                        <li class="flex items-start text-sm text-gray-700"><span class="mr-2 text-blue-500">➜</span> <strong>语言：</strong> 强制介入“我要吃...”练习代词。</li>
+                        <li class="flex items-start text-sm text-gray-700"><span class="mr-2 text-blue-500">➜</span> <strong>构音：</strong> 用果酱涂人中，诱发舌尖上翘。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Family Training Plan -->
+        <section>
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 border-l-4 border-green-500 pl-4">详细家庭训练安排表</h2>
+                <p class="mt-2 text-gray-600">
+                    将训练目标融入日常生活的各个时间段，确保高频次、低压力的自然干预。
+                </p>
+            </div>
+
+            <div class="relative pl-8 space-y-8 bg-white p-8 rounded-2xl shadow-sm">
+                <div class="timeline-line"></div>
+
+                <!-- Morning -->
+                <div class="relative z-10">
+                    <div class="flex items-center mb-2">
+                        <div class="bg-yellow-400 w-12 h-12 rounded-full flex items-center justify-center text-white text-xl shadow-md border-4 border-white">🌅</div>
+                        <h3 class="text-xl font-bold text-gray-800 ml-4">晨间互动 (Morning)</h3>
+                    </div>
+                    <div class="ml-16 bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <p class="font-bold text-blue-600 mb-1">主题：问候与方位</p>
+                        <p class="text-sm text-gray-700"><strong>方法：</strong> 问“谁在你前面？”，引导回答“妈妈在**我**前面”。</p>
+                        <p class="text-xs text-gray-500 mt-2">道具：无</p>
+                    </div>
+                </div>
+
+                <!-- Post-Meal -->
+                <div class="relative z-10">
+                    <div class="flex items-center mb-2">
+                        <div class="bg-orange-400 w-12 h-12 rounded-full flex items-center justify-center text-white text-xl shadow-md border-4 border-white">🥣</div>
+                        <h3 class="text-xl font-bold text-gray-800 ml-4">餐后练习 (After Meal)</h3>
+                    </div>
+                    <div class="ml-16 bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <p class="font-bold text-blue-600 mb-1">主题：/l/ 音诱导</p>
+                        <p class="text-sm text-gray-700"><strong>方法：</strong> 练习发“啦啦啦”。使用咬舌尖法，或用棉签沾蜂蜜触碰上颚/人中，诱导舌尖上翘。</p>
+                        <p class="text-xs text-gray-500 mt-2">道具：棉签、蜂蜜</p>
+                    </div>
+                </div>
+
+                <!-- Afternoon -->
+                <div class="relative z-10">
+                    <div class="flex items-center mb-2">
+                        <div class="bg-green-400 w-12 h-12 rounded-full flex items-center justify-center text-white text-xl shadow-md border-4 border-white">🎲</div>
+                        <h3 class="text-xl font-bold text-gray-800 ml-4">午后游戏 (Afternoon)</h3>
+                    </div>
+                    <div class="ml-16 bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <p class="font-bold text-blue-600 mb-1">主题：按数取物</p>
+                        <p class="text-sm text-gray-700"><strong>方法：</strong> 指令“给妈妈3块积木”。重点监督手口一致点数，不要多拿也不要少拿。</p>
+                        <p class="text-xs text-gray-500 mt-2">道具：积木、饼干</p>
+                    </div>
+                </div>
+
+                <!-- Bedtime -->
+                <div class="relative z-10">
+                    <div class="flex items-center mb-2">
+                        <div class="bg-indigo-400 w-12 h-12 rounded-full flex items-center justify-center text-white text-xl shadow-md border-4 border-white">🌙</div>
+                        <h3 class="text-xl font-bold text-gray-800 ml-4">睡前回顾 (Bedtime)</h3>
+                    </div>
+                    <div class="ml-16 bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <p class="font-bold text-blue-600 mb-1">主题：逻辑复述</p>
+                        <p class="text-sm text-gray-700"><strong>方法：</strong> 翻看手机照片，问“爸爸在哪上班？”。强调区分“公司”与“公园”，纠正思维固着。</p>
+                        <p class="text-xs text-gray-500 mt-2">道具：手机照片</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Visual Aids Workshop -->
+        <section>
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 border-l-4 border-purple-500 pl-4">视觉图卡制作建议</h2>
+                <p class="mt-2 text-gray-600">
+                    建议家长制作以下4种卡片，弥补听觉劣势，增强理解。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Card 1: Pronouns -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col items-center text-center">
+                    <h4 class="font-bold text-gray-800 mb-2">1. 代词转换卡</h4>
+                    <div class="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-2 border-2 border-blue-200 text-3xl">
+                        👈😐👉
+                    </div>
+                    <p class="text-xs text-gray-600">中间画人，指着自己写"我"，指着对面写"你"。</p>
+                </div>
+
+                <!-- Card 2: L/N Contrast -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col items-center text-center">
+                    <h4 class="font-bold text-gray-800 mb-2">2. L/N 对比卡</h4>
+                    <div class="w-full flex justify-center space-x-2 mb-2">
+                        <div class="bg-yellow-100 p-2 rounded text-lg">🍐 L</div>
+                        <div class="bg-stone-200 p-2 rounded text-lg">🌫️ N</div>
+                    </div>
+                    <p class="text-xs text-gray-600">左边画梨(Li)，右边画泥(Ni)，夸张展示口型区别。</p>
+                </div>
+
+                <!-- Card 3: Logic -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col items-center text-center">
+                    <h4 class="font-bold text-gray-800 mb-2">3. 因果连线卡</h4>
+                    <div class="space-y-1 mb-2 text-xs w-full">
+                        <div class="flex justify-between bg-gray-50 p-1"><span>🌧️</span> ➔ <span>🌂</span></div>
+                        <div class="flex justify-between bg-gray-50 p-1"><span>👟</span> ➔ <span>🪥</span></div>
+                    </div>
+                    <p class="text-xs text-gray-600">左边原因（下雨），右边结果（打伞），让孩子连线。</p>
+                </div>
+
+                <!-- Card 4: Counting -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col items-center text-center">
+                    <h4 class="font-bold text-gray-800 mb-2">4. 按数圈画卡</h4>
+                    <div class="w-full border border-gray-300 h-16 rounded mb-2 flex items-center justify-center space-x-1 relative">
+                        <span class="text-red-500">●</span><span class="text-red-500">●</span><span class="text-red-500">●</span>
+                        <div class="absolute bottom-0 right-0 bg-gray-100 px-1 text-xs">3</div>
+                    </div>
+                    <p class="text-xs text-gray-600">画几何图形，下方写数字，辅助手口一致练习。</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="mb-2">© 2026 君康言语教学督导组</p>
+            <p class="text-xs text-gray-500">建议每周复盘一次，根据进步情况调整训练难度。</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Implementation -->
+    <script>
+        // Data Configuration
+        const radarData = {
+            labels: [
+                '社交互动 (Interaction)', 
+                '听记推理 (Reasoning)', 
+                '构音训练 (Articulation)', 
+                '因果关系 (Logic)', 
+                '数学概念 (Math)'
+            ],
+            datasets: [{
+                label: '技能掌握度 (%)',
+                data: [50, 80, 40, 90, 60],
+                fill: true,
+                backgroundColor: 'rgba(59, 130, 246, 0.2)', // Blue-500 with opacity
+                borderColor: 'rgb(59, 130, 246)', // Blue-500
+                pointBackgroundColor: 'rgb(59, 130, 246)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(59, 130, 246)'
+            }]
+        };
+
+        const barData = {
+            labels: ['因果关系', '听记推理', '数学概念', '社交互动', '构音训练'],
+            datasets: [{
+                label: '目标达成率 (%)',
+                data: [90, 80, 60, 50, 40],
+                backgroundColor: [
+                    'rgba(16, 185, 129, 0.7)', // Emerald (High)
+                    'rgba(16, 185, 129, 0.7)',
+                    'rgba(245, 158, 11, 0.7)', // Amber (Mid)
+                    'rgba(245, 158, 11, 0.7)',
+                    'rgba(239, 68, 68, 0.7)'   // Red (Low)
+                ],
+                borderColor: [
+                    'rgb(16, 185, 129)',
+                    'rgb(16, 185, 129)',
+                    'rgb(245, 158, 11)',
+                    'rgb(245, 158, 11)',
+                    'rgb(239, 68, 68)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Utility: Label Wrapper for Chart.js
+        function wrapLabel(str, maxLen = 16) {
+            if (str.length <= maxLen) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= maxLen) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // Apply wrapping to labels
+        radarData.labels = radarData.labels.map(l => wrapLabel(l));
+        // Bar chart labels are short enough, but applying just in case
+        barData.labels = barData.labels.map(l => wrapLabel(l));
+
+        // Common Tooltip Configuration (MANDATORY)
+        const tooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Radar Chart
+            const ctxRadar = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: radarData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: { borderWidth: 3 }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0,0,0,0.1)' },
+                            grid: { color: 'rgba(0,0,0,0.1)' },
+                            pointLabels: {
+                                font: { size: 12, family: "'Noto Sans SC', sans-serif" },
+                                color: '#475569'
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    },
+                    plugins: {
+                        tooltip: tooltipConfig,
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Bar Chart
+            const ctxBar = document.getElementById('barChart').getContext('2d');
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: barData,
+                options: {
+                    indexAxis: 'y', // Horizontal Bar
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        y: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        tooltip: tooltipConfig,
+                        legend: { display: false }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
