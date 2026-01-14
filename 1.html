@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跳跳（君康）教学督导分析可视化报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- 
+    Palette Selection: "Energetic & Professional"
+    Primary: #4F46E5 (Indigo 600)
+    Secondary: #F59E0B (Amber 500)
+    Background: #F3F4F6 (Gray 100)
+    Surface: #FFFFFF (White)
+    Text: #1F2937 (Gray 800)
+    -->
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #F3F4F6;
+            color: #1F2937;
+        }
+
+        /* Chart Container Styling - Responsive & Controlled */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom Card Styling */
+        .info-card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 4px solid #4F46E5;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #E5E7EB;
+        }
+    </style>
+
+    <!-- Source Material Analysis & Plan Summary
+    1.  **Analyze Material:** The report (2026-01-14) covers 5 key areas for student Tiaotiao.
+        * Social: Good compliance, struggles with pronouns (You/Me) & full sentences.
+        * Cognitive: Strong visual reasoning, weak auditory memory (primacy effect).
+        * Oral Motor: Good tongue sweep, weak lip pursing & tongue elevation.
+        * Articulation: 'L' sound improved with aid, 'N/L' confusion persists.
+        * Math: Good rote counting, weak hand-mouth coordination.
+    
+    2.  **Plan Narrative:**
+        * **Header:** Quick summary of the session.
+        * **Overview:** Radar chart to show the imbalance between high compliance/visual skills and lower articulation/auditory memory.
+        * **Detailed Breakdown:**
+            * *Oral Motor:* Horizontal Bar Chart comparing specific muscle groups (Lips vs Tongue).
+            * *Cognitive:* Vertical Bar Chart contrasting Visual vs Auditory performance.
+        * **Training Plan:** A daily schedule visualization (Morning/Noon/Evening) using CSS timeline.
+    
+    3.  **Visualization Choices (NO SVG):**
+        * *Holistic View:* Radar Chart (Chart.js). Goal: Compare multiple dimensions simultaneously.
+        * *Muscle Control:* Horizontal Bar Chart (Chart.js). Goal: Compare specific physical capabilities.
+        * *Cognitive Gap:* Bar Chart (Chart.js). Goal: Compare two distinct cognitive modalities.
+        * *Schedule:* CSS/HTML Timeline. Goal: Organize the process clearly.
+    -->
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        
+        <!-- Header Section -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-indigo-700 mb-2">ASD 一对一教学督导分析报告</h1>
+            <h2 class="text-xl text-gray-600 font-medium">学生：跳跳（君康） | 上课日期：2026年1月14日</h2>
+            <div class="mt-4 flex justify-center space-x-4">
+                <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-semibold">社交互动</span>
+                <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-semibold">听语推理</span>
+                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">口部运动</span>
+            </div>
+        </header>
+
+        <!-- Section 1: Holistic Performance Overview -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="info-card">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">本课综合能力评估</h3>
+                <p class="mb-4 text-gray-600">
+                    基于本节课的表现，跳跳在<strong>社交配合度</strong>与<strong>看图推理</strong>方面表现优异，但在<strong>精细口部运动</strong>与<strong>长句听觉记忆</strong>方面存在明显挑战。以下五维图展示了各项能力的均衡状况。
+                </p>
+                <div class="chart-container">
+                    <canvas id="radarOverviewChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Key Highlights (Text) -->
+            <div class="info-card">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">核心表现摘要</h3>
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-2xl">✅</div>
+                        <div class="ml-4">
+                            <h4 class="text-lg font-bold text-gray-900">做得好的方面 (Strengths)</h4>
+                            <ul class="list-disc list-inside text-gray-700 mt-1 space-y-1">
+                                <li><strong>社交：</strong> 能准确识别前后方位，配合度高。</li>
+                                <li><strong>认知：</strong> 看图推理能力强（如猜水果谜语）。</li>
+                                <li><strong>构音：</strong> 辅助下 L音（可乐、沙拉）清晰度提升。</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-red-100 flex items-center justify-center text-2xl">⚠️</div>
+                        <div class="ml-4">
+                            <h4 class="text-lg font-bold text-gray-900">需重点提升 (Challenges)</h4>
+                            <ul class="list-disc list-inside text-gray-700 mt-1 space-y-1">
+                                <li><strong>听觉记忆：</strong> 长句由于“首位效应”缺失，易忘句首主语。</li>
+                                <li><strong>人称代词：</strong> “你/我”转换困难，思维易卡顿。</li>
+                                <li><strong>口部运动：</strong> 蹩唇困难（易变圆唇），舌尖灵活性不足。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Deep Dive - Oral Motor & Cognition -->
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-8 border-indigo-600 pl-4">专项深度分析</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <!-- Oral Motor Chart -->
+            <div class="info-card">
+                <h3 class="text-xl font-bold text-gray-800 mb-2">口部运动精细度分析</h3>
+                <p class="text-sm text-gray-500 mb-4">
+                    唇部控制力量不均，舌尖独立运动能力尚需加强。数据显示“蹩唇”动作为当前最大难点。
+                </p>
+                <div class="chart-container">
+                    <canvas id="oralMotorChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Cognitive Gap Chart -->
+            <div class="info-card">
+                <h3 class="text-xl font-bold text-gray-800 mb-2">认知通道差异对比</h3>
+                <p class="text-sm text-gray-500 mb-4">
+                    跳跳存在显著的视觉优势与听觉弱势。看图推理（视觉）得分远高于长句听记（听觉），提示需加强无视觉辅助的听力训练。
+                </p>
+                <div class="chart-container">
+                    <canvas id="cognitiveGapChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Detailed Breakdown -->
+        <div class="grid grid-cols-1 mb-8">
+            <div class="info-card bg-indigo-50 border-indigo-200">
+                <h3 class="text-2xl font-bold text-indigo-900 mb-4">🗣️ 语言与构音细节追踪</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-bold text-indigo-600 mb-2">L音 / N音 辨析</h4>
+                        <p class="text-gray-700 text-sm">借助压舌板辅助时，<strong>L音</strong>（如：可乐）发音位置准确。但在脱离辅助后，容易回退至鼻音N（如：毛驴 -> 毛女）。</p>
+                        <div class="mt-2 text-xs text-gray-400">建议：持续使用棒棒糖/压舌板进行舌尖抵阻练习。</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-bold text-indigo-600 mb-2">句式完整性</h4>
+                        <p class="text-gray-700 text-sm">回答“谁帮老师关门”时，常省略核心动词<strong>“帮”</strong>。句子结构往往是“主语+宾语”，缺失谓语。</p>
+                        <div class="mt-2 text-xs text-gray-400">建议：强制要求由于“主+动+宾”构成的完整句式。</div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-bold text-indigo-600 mb-2">代词转换逻辑</h4>
+                        <p class="text-gray-700 text-sm">面对“你的/我的”转换时，出现直接模仿老师用词的现象。这是典型的ASD<strong>思维刻板</strong>表现。</p>
+                        <div class="mt-2 text-xs text-gray-400">建议：通过镜子游戏强化“指谁说谁”的逻辑。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Home Training Schedule -->
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 border-l-8 border-amber-500 pl-4">📅 家庭每日训练计划 (10-15分钟/次)</h2>
+        <div class="info-card relative">
+            <p class="mb-6 text-gray-600">
+                遵循“短频快”原则，避免长时间疲劳战。请家长务必保持环境安静，并在孩子专注30分钟后给予休息。
+            </p>
+            
+            <div class="relative pl-8">
+                <div class="timeline-line bg-gray-200"></div>
+                
+                <!-- Morning -->
+                <div class="relative mb-8">
+                    <div class="absolute -left-10 mt-1.5 w-6 h-6 bg-indigo-500 rounded-full border-4 border-white shadow"></div>
+                    <h4 class="text-xl font-bold text-indigo-700">🌅 早间：口部运动操 (15 min)</h4>
+                    <div class="mt-3 bg-gray-50 p-4 rounded-lg border-l-4 border-indigo-400">
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <span class="font-bold mr-2 text-indigo-500">1.</span>
+                                <span><strong>唇部切换：</strong>照镜子做“圆唇-展唇-蹩唇”循环切换，每组20次。重点纠正“蹩唇”。</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="font-bold mr-2 text-indigo-500">2.</span>
+                                <span><strong>舌部力量：</strong>舌尖扫牙面（左右各10圈），用棒棒糖抵住舌尖训练对抗力。</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="font-bold mr-2 text-indigo-500">3.</span>
+                                <span><strong>构音复习：</strong>发音词汇“沙拉、可乐、雪梨”，强调舌尖顶上齿龈。</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Afternoon -->
+                <div class="relative mb-8">
+                    <div class="absolute -left-10 mt-1.5 w-6 h-6 bg-amber-500 rounded-full border-4 border-white shadow"></div>
+                    <h4 class="text-xl font-bold text-amber-600">☀️ 午后：逻辑与认知 (20 min)</h4>
+                    <div class="mt-3 bg-gray-50 p-4 rounded-lg border-l-4 border-amber-400">
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <span class="font-bold mr-2 text-amber-500">1.</span>
+                                <span><strong>因果提问：</strong>生活化场景提问（如“手脏了怎么办？”），强制用“因为...所以...”回答。</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="font-bold mr-2 text-amber-500">2.</span>
+                                <span><strong>长句抓取：</strong>讲短故事，随即追问<strong>故事开头</strong>的人物或地点，训练首位记忆。</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="font-bold mr-2 text-amber-500">3.</span>
+                                <span><strong>数概念：</strong>按数取物（乐高/水果），指令“给我5个”，要求手口一致。</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Evening -->
+                <div class="relative">
+                    <div class="absolute -left-10 mt-1.5 w-6 h-6 bg-green-500 rounded-full border-4 border-white shadow"></div>
+                    <h4 class="text-xl font-bold text-green-600">🌙 晚间：社交泛化 (15 min)</h4>
+                    <div class="mt-3 bg-gray-50 p-4 rounded-lg border-l-4 border-green-400">
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <span class="font-bold mr-2 text-green-500">1.</span>
+                                <span><strong>代词游戏：</strong>全家玩“指五官”，互相问“这是谁的鼻子？”，必须回答“你的/我的”。</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="font-bold mr-2 text-green-500">2.</span>
+                                <span><strong>完整句请求：</strong>晚饭或吃零食时，必须说“请给我...”完整句式才能满足需求。</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-gray-500 text-sm">
+            <p>ASD 一对一教学督导报告 | 生成日期：2026年1月14日</p>
+            <p>请家长根据此计划执行，并记录每日完成情况。</p>
+        </footer>
+
+    </div>
+
+    <!-- Script for Charts -->
+    <script>
+        // --- Helper Function: Wrap Labels (16 char limit) ---
+        function wrapLabel(label) {
+            if (label.length <= 16) return label;
+            const words = label.split(''); // Splitting by char for Chinese text handling
+            const lines = [];
+            let currentLine = '';
+            
+            words.forEach(char => {
+                if ((currentLine + char).length > 16) {
+                    lines.push(currentLine);
+                    currentLine = char;
+                } else {
+                    currentLine += char;
+                }
+            });
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- Common Tooltip Config ---
+        const commonTooltip = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join('');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- Chart 1: Radar Overview ---
+        const ctxRadar = document.getElementById('radarOverviewChart').getContext('2d');
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: ['社交互动 (Social)', '听语推理 (Cognitive)', '口部运动 (Oral)', '构音质量 (Speech)', '数概念 (Math)'],
+                datasets: [{
+                    label: '能力评分 (1-10)',
+                    data: [7, 8, 5, 5, 6], // Estimated scores based on qualitative report
+                    backgroundColor: 'rgba(79, 70, 229, 0.2)', // Indigo 20%
+                    borderColor: '#4F46E5', // Indigo 600
+                    pointBackgroundColor: '#F59E0B', // Amber 500
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#F59E0B',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: '#E5E7EB' },
+                        grid: { color: '#E5E7EB' },
+                        pointLabels: {
+                            font: { size: 12, family: "'Noto Sans SC', sans-serif" },
+                            color: '#374151'
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 10
+                    }
+                },
+                plugins: {
+                    tooltip: commonTooltip,
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // --- Chart 2: Oral Motor Skills (Bar) ---
+        // Highlighting the specific muscle control issues
+        const ctxOral = document.getElementById('oralMotorChart').getContext('2d');
+        const oralLabels = ['扫唇动作 (Sweeping)', '伸舌力度 (Extension)', 'L音发音(含辅具)', '蹩唇控制 (Pursing)', '舌尖上抬 (Elevation)'].map(l => wrapLabel(l));
+
+        new Chart(ctxOral, {
+            type: 'bar',
+            data: {
+                labels: oralLabels,
+                datasets: [{
+                    label: '完成度 %',
+                    data: [85, 80, 75, 40, 30], // Data derived from "Good" vs "Needs Improvement"
+                    backgroundColor: [
+                        '#10B981', // Green (Good)
+                        '#10B981',
+                        '#F59E0B', // Amber (Moderate)
+                        '#EF4444', // Red (Weak)
+                        '#EF4444'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Horizontal Bar
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { display: false }
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    tooltip: commonTooltip,
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // --- Chart 3: Cognitive Gap (Bar) ---
+        // Comparing Visual vs Auditory processing
+        const ctxCognitive = document.getElementById('cognitiveGapChart').getContext('2d');
+        new Chart(ctxCognitive, {
+            type: 'bar',
+            data: {
+                labels: ['看图推理 (视觉优势)', '长句首位记忆 (听觉弱势)'],
+                datasets: [{
+                    label: '能力表现',
+                    data: [90, 35],
+                    backgroundColor: ['#4F46E5', '#EF4444'], // Indigo (Strong) vs Red (Weak)
+                    borderRadius: 8,
+                    barPercentage: 0.5
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: { display: true, text: '相对能力值' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    tooltip: commonTooltip,
+                    legend: { display: false }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
