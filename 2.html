@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>君康言语教学分析报告 | 2026-01-14</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #fdfbf7; /* Warm neutral background */
+            color: #4a4a4a;
+        }
+
+        /* Chart Container Styling per requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4d4d8; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1aa; 
+        }
+
+        /* Card Hover Effects */
+        .interactive-card {
+            transition: all 0.3s ease;
+        }
+        .interactive-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Visual Aid Card Simulation */
+        .visual-card-mockup {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            aspect-ratio: 3/4;
+            transition: transform 0.2s;
+        }
+        .visual-card-mockup:hover {
+            border-color: #fbbf24;
+            transform: scale(1.02);
+        }
+
+        .section-fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals with Soft Accents 
+         Background: #fdfbf7 (Creamy White)
+         Primary Text: #4a4a4a (Dark Gray)
+         Accents: 
+            - Performance High: #10b981 (Emerald Green)
+            - Performance Low: #f59e0b (Amber)
+            - Performance Mid: #3b82f6 (Blue)
+            - Background Accents: #f3f4f6 (Cool Gray)
+    -->
+    <!-- Application Structure Plan:
+         1. Hero Section: Summary of the session date, student, and key takeaway (high-level sentiment).
+         2. Performance Radar: A visual overview of the 5 core teaching blocks using a Radar Chart to show balance and gaps immediately.
+         3. Deep Dive Grid: Detailed cards for each teaching area (Social, Listening, Speech, Math) allowing users to filter good vs. bad performance.
+         4. SWOT Analysis: A structured layout for Strengths, Weaknesses, and Suggestions.
+         5. Family Training Timeline: An interactive schedule where parents can click time slots to see specific instructions.
+         6. Visual Aid Workshop: A section visualizing the suggested physical cards to help parents understand what to make.
+         Rationale: This structure moves from high-level data -> specific analysis -> actionable plans -> concrete tools, mirroring the flow of understanding to action.
+    -->
+    <!-- Visualization & Content Choices:
+         - Radar Chart: Chosen to visualize the "Core Teaching Summary Table" percentages. It clearly shows the uneven development (strong logic, weak articulation).
+         - Interactive Cards: Used for the "Deep Dive" to allow parents to focus on specific domains without being overwhelmed by text.
+         - Timeline UI: Used for the Family Plan to make the schedule feel manageable and sequential rather than a laundry list.
+         - CSS Shapes: Used to mock up the "Visual Cards" to give a concrete visual reference without needing external images.
+         - NO SVG/Mermaid confirmed.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-gray-800">君康言语教学档案</span>
+                    <span class="ml-4 px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded-full">2026-01-14</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <button onclick="scrollToSection('overview')" class="text-gray-600 hover:text-amber-600 px-3 py-2 rounded-md text-sm font-medium">概览</button>
+                    <button onclick="scrollToSection('details')" class="text-gray-600 hover:text-amber-600 px-3 py-2 rounded-md text-sm font-medium">详细表现</button>
+                    <button onclick="scrollToSection('plan')" class="text-gray-600 hover:text-amber-600 px-3 py-2 rounded-md text-sm font-medium">家庭训练</button>
+                    <button onclick="scrollToSection('visuals')" class="text-gray-600 hover:text-amber-600 px-3 py-2 rounded-md text-sm font-medium">视觉教具</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Hero / Overview Section -->
+        <section id="overview" class="section-fade-in text-center mb-12">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">课堂表现深度总结</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
+                本次课程中，君康在<span class="font-bold text-green-600">因果逻辑推理</span>方面表现出色，但在<span class="font-bold text-amber-600">人称代词转换</span>及<span class="font-bold text-amber-600">舌尖音(/l/)构音</span>上遇到挑战。
+                以下是基于录音与教案的交互式数据分析，旨在帮助您直观理解孩子的技能分布与训练重点。
+            </p>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <!-- Chart Column -->
+                    <div class="w-full">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4">核心能力维度图谱</h3>
+                        <div class="chart-container">
+                            <canvas id="competencyChart"></canvas>
+                        </div>
+                        <p class="text-sm text-gray-500 mt-2">图表显示了五大核心板块的目标达成率。逻辑推理接近满分，而构音训练需重点加强。</p>
+                    </div>
+
+                    <!-- Key Stats Column -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                        <div class="p-4 bg-green-50 rounded-xl border border-green-100">
+                            <div class="text-sm text-green-600 font-bold uppercase tracking-wide">最佳表现</div>
+                            <div class="text-2xl font-bold text-gray-800 mt-1">因果关系</div>
+                            <p class="text-sm text-gray-600 mt-2">理解度 90%<br>能完整表达"因为...所以..."</p>
+                        </div>
+                        <div class="p-4 bg-amber-50 rounded-xl border border-amber-100">
+                            <div class="text-sm text-amber-600 font-bold uppercase tracking-wide">需重点关注</div>
+                            <div class="text-2xl font-bold text-gray-800 mt-1">构音训练</div>
+                            <p class="text-sm text-gray-600 mt-2">完成度 40%<br>舌尖力度不足，/l/与/n/混淆</p>
+                        </div>
+                        <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                            <div class="text-sm text-blue-600 font-bold uppercase tracking-wide">听觉优势</div>
+                            <div class="text-2xl font-bold text-gray-800 mt-1">特征推理</div>
+                            <p class="text-sm text-gray-600 mt-2">准确率 80%<br>能根据描述猜出物品(如柠檬)</p>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+                            <div class="text-sm text-gray-600 font-bold uppercase tracking-wide">环境因素</div>
+                            <div class="text-2xl font-bold text-gray-800 mt-1">感官防御</div>
+                            <p class="text-sm text-gray-600 mt-2">对噪音敏感<br>需安静环境辅助</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Breakdown -->
+        <section id="details" class="section-fade-in">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">分项教学内容详析</h2>
+                    <p class="text-gray-500 mt-1">点击卡片查看具体的表现亮点与问题点。</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="detailGrid">
+                <!-- Cards will be injected by JS -->
+            </div>
+        </section>
+
+        <!-- SWOT Analysis -->
+        <section class="section-fade-in bg-white rounded-2xl shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">综合优劣势分析</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Strengths -->
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-3">
+                            <span class="text-green-600 text-xl font-bold">✓</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800">优势 (Strengths)</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="p-3 bg-green-50 rounded-lg text-sm text-gray-700 border-l-4 border-green-400">
+                            <strong>因果逻辑扎实：</strong> 能理解并表达“下雨打伞”、“手脏洗手”等逻辑。
+                        </li>
+                        <li class="p-3 bg-green-50 rounded-lg text-sm text-gray-700 border-l-4 border-green-400">
+                            <strong>视觉加工快：</strong> 图卡配合下的反应速度优于纯听觉指令。
+                        </li>
+                        <li class="p-3 bg-green-50 rounded-lg text-sm text-gray-700 border-l-4 border-green-400">
+                            <strong>配合度良好：</strong> 尽管有情绪波动，仍能坚持完成枯燥练习。
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Weaknesses -->
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                            <span class="text-red-600 text-xl font-bold">!</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800">挑战 (Challenges)</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="p-3 bg-red-50 rounded-lg text-sm text-gray-700 border-l-4 border-red-400">
+                            <strong>感官防御：</strong> 噪音易诱发情绪不稳和分心。
+                        </li>
+                        <li class="p-3 bg-red-50 rounded-lg text-sm text-gray-700 border-l-4 border-red-400">
+                            <strong>代词转换困难：</strong> 缺乏“你/我”视角切换能力。
+                        </li>
+                        <li class="p-3 bg-red-50 rounded-lg text-sm text-gray-700 border-l-4 border-red-400">
+                            <strong>构音精细化弱：</strong> 舌尖位置不稳定，力量不足。
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Suggestions -->
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                            <span class="text-blue-600 text-xl font-bold">➜</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800">建议 (Actions)</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="p-3 bg-blue-50 rounded-lg text-sm text-gray-700 border-l-4 border-blue-400">
+                            <strong>环境调节：</strong> 使用降噪耳机或安静环境减少干扰。
+                        </li>
+                        <li class="p-3 bg-blue-50 rounded-lg text-sm text-gray-700 border-l-4 border-blue-400">
+                            <strong>生理需求介入：</strong> 通过“我要吃...”练习代词转换。
+                        </li>
+                        <li class="p-3 bg-blue-50 rounded-lg text-sm text-gray-700 border-l-4 border-blue-400">
+                            <strong>舌尖诱发：</strong> 利用果酱涂抹人中，诱发舌尖上翘。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Family Training Plan -->
+        <section id="plan" class="section-fade-in">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">家庭详细训练安排表</h2>
+            <p class="text-gray-500 mb-8">点击时间段查看具体的操作方法与所需道具。</p>
+
+            <div class="relative">
+                <!-- Timeline Line -->
+                <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gray-200"></div>
+
+                <div class="space-y-8" id="trainingPlanContainer">
+                    <!-- Plan items injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Visual Aids Workshop -->
+        <section id="visuals" class="section-fade-in bg-gray-50 rounded-2xl p-8 border border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">视觉教具制作指南</h2>
+            <p class="text-gray-600 mb-8 max-w-2xl">
+                以下是建议您在家中制作的四组卡片示意图。这些视觉辅助工具能有效弥补君康的听觉加工弱势，辅助代词理解和构音练习。
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Card 1: Pronouns -->
+                <div class="visual-card-mockup p-4 shadow-sm">
+                    <div class="text-xs text-gray-400 uppercase tracking-widest mb-4">卡片类型 1</div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">代词转换卡</h3>
+                    <div class="flex-1 w-full bg-blue-50 rounded-lg flex flex-col items-center justify-center p-2 mb-2 border border-blue-100 relative">
+                        <!-- Simple CSS Icon representing a person pointing -->
+                        <div class="text-4xl mb-2">👦</div>
+                        <div class="flex space-x-4 w-full justify-between px-2">
+                            <span class="bg-white px-2 py-1 rounded text-xs font-bold border border-gray-200">👈 我</span>
+                            <span class="bg-white px-2 py-1 rounded text-xs font-bold border border-gray-200">你 👉</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-center text-gray-500">中心画人，分别指自己和对面，标注“我/你”。</p>
+                </div>
+
+                <!-- Card 2: L/N Contrast -->
+                <div class="visual-card-mockup p-4 shadow-sm">
+                    <div class="text-xs text-gray-400 uppercase tracking-widest mb-4">卡片类型 2</div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">L / N 对比卡</h3>
+                    <div class="flex-1 w-full grid grid-cols-2 gap-2 mb-2">
+                        <div class="bg-yellow-50 rounded-lg flex flex-col items-center justify-center border border-yellow-100">
+                            <span class="text-2xl">🍐</span>
+                            <span class="text-sm font-bold text-gray-700">Lí (梨)</span>
+                        </div>
+                        <div class="bg-stone-50 rounded-lg flex flex-col items-center justify-center border border-stone-200">
+                            <span class="text-2xl">🟤</span>
+                            <span class="text-sm font-bold text-gray-700">Ní (泥)</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-center text-gray-500">左右对比，强调口型差异（舌尖顶上齿龈 vs 鼻音）。</p>
+                </div>
+
+                <!-- Card 3: Logic -->
+                <div class="visual-card-mockup p-4 shadow-sm">
+                    <div class="text-xs text-gray-400 uppercase tracking-widest mb-4">卡片类型 3</div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">因果连线图</h3>
+                    <div class="flex-1 w-full bg-white rounded-lg p-2 mb-2 border border-gray-200 flex flex-col justify-between">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="bg-gray-100 p-1 rounded">🌧️ 下雨</span>
+                            <span class="text-gray-300">--------</span>
+                            <span class="bg-gray-100 p-1 rounded">🌂 打伞</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="bg-gray-100 p-1 rounded">👟 脏鞋</span>
+                            <span class="text-gray-300">--------</span>
+                            <span class="bg-gray-100 p-1 rounded">🪥 刷鞋</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="bg-gray-100 p-1 rounded">😰 出汗</span>
+                            <span class="text-gray-300">--------</span>
+                            <span class="bg-gray-100 p-1 rounded">🚿 洗澡</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-center text-gray-500">左侧为原因场景，右侧为动作结果，让孩子连线。</p>
+                </div>
+
+                <!-- Card 4: Math -->
+                <div class="visual-card-mockup p-4 shadow-sm">
+                    <div class="text-xs text-gray-400 uppercase tracking-widest mb-4">卡片类型 4</div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">按数圈画卡</h3>
+                    <div class="flex-1 w-full bg-white rounded-lg p-2 mb-2 border border-gray-200 flex flex-col items-center justify-center">
+                        <div class="flex space-x-1 mb-2">
+                            <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                        </div>
+                        <div class="text-2xl font-bold text-gray-800 border-t border-gray-200 w-full text-center pt-1">3</div>
+                        <div class="text-[10px] text-gray-400 mt-1">圈出 3 个圆</div>
+                    </div>
+                    <p class="text-xs text-center text-gray-500">上方画几何图形，下方写数字，练习手口一致。</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-sm text-gray-400">© 2026 君康言语教学督导组 | 基于2026-01-14课堂记录生成</p>
+            <p class="text-xs text-gray-500 mt-2">建议配合医生或专业治疗师指导使用</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Data Layer ---
+        const reportData = {
+            competencyScores: {
+                labels: ['社交互动', '听记推理', '构音训练', '因果关系', '数学概念'],
+                data: [50, 80, 40, 90, 60]
+            },
+            details: [
+                {
+                    category: "社交互动与对话",
+                    icon: "💬",
+                    colorClass: "blue",
+                    performance: "能完成基础打招呼和教室内人数的点数。",
+                    issues: [
+                        "人称代词转换困难（谁在你的前面？应回答“我”的前面）。",
+                        "动词遗漏（如“帮”老师关门）。",
+                        "生活经验固着（爸爸去公司vs去公园）。"
+                    ]
+                },
+                {
+                    category: "听觉记忆与逻辑",
+                    icon: "👂",
+                    colorClass: "purple",
+                    performance: "三要素短句听记良好；柠檬谜语推理准确（基于视觉辅助）。",
+                    issues: [
+                        "推理仍依赖视觉图卡辅助，纯听觉推理尚未完全独立。"
+                    ]
+                },
+                {
+                    category: "言语与构音",
+                    icon: "🗣️",
+                    colorClass: "amber",
+                    performance: "口部基础动作（展唇、圆唇）配合度高。",
+                    issues: [
+                        "舌尖灵活性差，扫唇动作不佳。",
+                        "/l/ 音发成 /n/（沙拉->沙纳），需工具辅助定位。"
+                    ]
+                },
+                {
+                    category: "数学概念",
+                    icon: "🔢",
+                    colorClass: "teal",
+                    performance: "1-10 机械点数基本过关。",
+                    issues: [
+                        "按数取物/圈画困难，手口不一致，需视觉提示。"
+                    ]
+                }
+            ],
+            trainingPlan: [
+                {
+                    time: "晨间互动",
+                    title: "问候与方位",
+                    method: "问：'谁在你前面？' 引导回答：'妈妈在*我*前面。' 重点纠正代词。",
+                    props: "无",
+                    color: "bg-orange-100 border-orange-200 text-orange-800"
+                },
+                {
+                    time: "餐后练习",
+                    title: "/l/ 音诱导",
+                    method: "练习发'啦啦啦'。可用咬舌尖法或棉签辅助，让孩子感受舌尖在牙后的弹动。",
+                    props: "棉签、蜂蜜/果酱",
+                    color: "bg-yellow-100 border-yellow-200 text-yellow-800"
+                },
+                {
+                    time: "午后游戏",
+                    title: "按数取物",
+                    method: "指令：'给妈妈3块积木'。监督手口一致点数，拿一个数一个。",
+                    props: "积木、饼干",
+                    color: "bg-green-100 border-green-200 text-green-800"
+                },
+                {
+                    time: "绘本时间",
+                    title: "推理与因果",
+                    method: "描述特征猜水果；提问'为什么...'引导因果句表达。",
+                    props: "绘本、图卡",
+                    color: "bg-blue-100 border-blue-200 text-blue-800"
+                },
+                {
+                    time: "睡前回顾",
+                    title: "逻辑复述",
+                    method: "回忆一天见闻或常识：'爸爸在哪上班？'（强调区分公司与公园）。",
+                    props: "手机照片",
+                    color: "bg-indigo-100 border-indigo-200 text-indigo-800"
+                }
+            ]
+        };
+
+        // --- Chart Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initRadarChart();
+            renderDetailCards();
+            renderTrainingPlan();
+        });
+
+        function initRadarChart() {
+            const ctx = document.getElementById('competencyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: reportData.competencyScores.labels,
+                    datasets: [{
+                        label: '目标达成率 (%)',
+                        data: reportData.competencyScores.data,
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: '#e5e7eb'
+                            },
+                            grid: {
+                                color: '#e5e7eb'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 14,
+                                    family: "'Noto Sans SC', sans-serif"
+                                },
+                                color: '#4b5563'
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: {
+                                stepSize: 20,
+                                backdropColor: 'transparent'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(17, 24, 39, 0.9)',
+                            padding: 12,
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 13 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- Render Functions ---
+
+        function renderDetailCards() {
+            const container = document.getElementById('detailGrid');
+            container.innerHTML = reportData.details.map(item => `
+                <div class="interactive-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:border-${item.colorClass}-300">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <span class="text-3xl mr-3">${item.icon}</span>
+                            <h3 class="text-xl font-bold text-gray-800">${item.category}</h3>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4 class="text-xs font-bold text-green-600 uppercase tracking-wide mb-2">表现良好</h4>
+                            <p class="text-sm text-gray-600 bg-green-50 p-3 rounded-lg border-l-2 border-green-500">
+                                ${item.performance}
+                            </p>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-amber-600 uppercase tracking-wide mb-2">主要问题</h4>
+                            <ul class="space-y-2">
+                                ${item.issues.map(issue => `
+                                    <li class="text-sm text-gray-600 bg-amber-50 p-2 rounded flex items-start">
+                                        <span class="text-amber-500 mr-2">•</span>
+                                        ${issue}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderTrainingPlan() {
+            const container = document.getElementById('trainingPlanContainer');
+            container.innerHTML = reportData.trainingPlan.map((plan, index) => `
+                <div class="relative z-10">
+                    <!-- Mobile Timeline Dot -->
+                    <div class="md:hidden absolute left-4 top-4 w-3 h-3 rounded-full bg-gray-300"></div>
+                    
+                    <div class="md:flex items-center justify-between group cursor-pointer transition-all duration-300" onclick="togglePlanDetails(${index})">
+                        <!-- Left: Time & Desktop Dot -->
+                        <div class="md:w-5/12 md:text-right pr-8 relative">
+                             <h3 class="text-lg font-bold text-gray-800 group-hover:text-amber-600 transition-colors">${plan.time}</h3>
+                             <p class="text-sm text-gray-500">${plan.title}</p>
+                             <!-- Dot on desktop center line -->
+                             <div class="hidden md:block absolute right-[-38px] top-1/2 transform -translate-y-1/2 w-4 h-4 rounded-full bg-white border-4 border-amber-400 z-20 shadow-sm"></div>
+                        </div>
+
+                        <!-- Right: Content Card -->
+                        <div class="md:w-5/12 mt-4 md:mt-0 pl-8 md:pl-0">
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow relative ml-8 md:ml-8">
+                                <!-- Mobile Line Connector -->
+                                <div class="md:hidden absolute left-[-26px] top-5 w-6 h-0.5 bg-gray-300"></div>
+                                
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-bold px-2 py-1 rounded bg-gray-100 text-gray-600">道具: ${plan.props}</span>
+                                    <span class="text-gray-400 text-sm transform transition-transform group-hover:translate-x-1">👉</span>
+                                </div>
+                                <p class="text-sm text-gray-700 leading-relaxed">${plan.method}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Utility Functions ---
+
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function togglePlanDetails(index) {
+            // Placeholder for future expansion logic if cards get complex
+            // Currently serves as a visual feedback trigger in CSS
+        }
+
+    </script>
+</body>
+</html>
